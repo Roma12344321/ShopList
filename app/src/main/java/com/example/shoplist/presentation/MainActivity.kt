@@ -12,20 +12,29 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoplist.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory : ViewModelFactory
     private lateinit var shopListAdapter: ShopListAdapter
     private lateinit var button_add_shop_item: FloatingActionButton
     private var shopItemContainer : FragmentContainerView? = null
 
+    private val component by lazy {
+        (application as ShopListApp).component
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         shopItemContainer = findViewById(R.id.shop_item_container)
         setupRecView()
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
         button_add_shop_item = findViewById(R.id.button_add_shop_item)
         button_add_shop_item.setOnClickListener {
             if (isOnePaneMode()){
